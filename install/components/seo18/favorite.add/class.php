@@ -17,6 +17,7 @@ class FavoriteAddComponent extends CBitrixComponent
 
         Loader::includeModule('sale');
         Loader::includeModule('catalog');
+        Loader::includeModule('seo18.favorite');
     }
 
     public function executeComponent()

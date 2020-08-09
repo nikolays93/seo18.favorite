@@ -2,8 +2,7 @@
 
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Loader;
-use Bitrix\Sale\Basket;
-use Bitrix\Sale\Fuser;
+use Seo18\Favorite\FavoriteHelper;
 
 class FavoriteComponent extends CBitrixComponent
 {
@@ -17,43 +16,16 @@ class FavoriteComponent extends CBitrixComponent
 
         Loader::includeModule('sale');
         Loader::includeModule('catalog');
-    }
-
-    /**
-     * @param  string $siteId
-     * @param  int $fUserId
-     * @param  Basket $basket
-     * @return array <BasketItem>[]
-     */
-    public static function getDelayedItems($siteId, $fUserId, $basket)
-    {
-        $delayedBasketItems = array();
-        foreach ($basket as $basketItem) {
-            if ('Y' === $basketItem->getField('DELAY')) {
-                array_push($delayedBasketItems, $basketItem);
-            }
-        }
-
-        return $delayedBasketItems;
-    }
-
-    /**
-     * @param  BasketItem $basketItem
-     * @return int
-     */
-    public static function getProductIdFromBasketItem($basketItem)
-    {
-        return (int) $basketItem->getProductId();
+        Loader::includeModule('seo18.favorite');
     }
 
     public function executeComponent()
     {
         $siteId = \Bitrix\Main\Context::getCurrent()->getSite();
-        $fUserId = Fuser::getId();
-        $basket = Basket::loadItemsForFUser($fUserId, $siteId);
-        $delayedBasketItems = static::getDelayedItems($siteId, $fUserId, $basket);
 
-        $this->arParams['DELAYED_BASKET_ITEMS'] = array_map(array(__CLASS__, 'getProductIdFromBasketItem'),
+        $delayedBasketItems = FavoriteHelper::getDelayedItems($siteId);
+
+        $this->arParams['DELAYED_BASKET_ITEMS'] = array_map(array('Seo18\Favorite\FavoriteHelper', 'getProductIdFromBasketItem'),
             $delayedBasketItems);
 
         $this->includeComponentTemplate();
