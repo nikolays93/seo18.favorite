@@ -11,15 +11,6 @@ jQuery(document).ready(function($) {
 
         var $button = $(this);
         var productId = $button.data('favorite');
-        var ajaxData = {
-            url: ajaxUrl,
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-                siteId: 's1',
-                productId: productId,
-            },
-        };
 
         function error(result) {
             console.error(result);
@@ -27,26 +18,27 @@ jQuery(document).ready(function($) {
 
         function success(result) {
             if ('add' == result.data.action) {
+                $button.addClass('added');
                 BX.onCustomEvent('OnFavoriteAdded', [$button]);
             } else {
+                $button.removeClass('added');
                 BX.onCustomEvent('OnFavoriteDeleted', [$button]);
             }
         }
 
-        $.ajax(ajaxData).done(function(result) {
+        $.ajax({
+            url: ajaxUrl,
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                siteId: 's1',
+                productId: productId,
+            },
+        }).done(function(result) {
             'success' == result.status ? success(result) : error(result);
         }).fail(error);
     });
 
-    BX.addCustomEvent('OnFavoriteAdded', BX.delegate(function($button) {
-        $button
-            .removeClass('btn-outline-primary')
-            .addClass('btn-primary');
-    }));
-
-    BX.addCustomEvent('OnFavoriteDeleted', BX.delegate(function($button) {
-        $button
-            .removeClass('btn-primary')
-            .addClass('btn-outline-primary');
-    }));
+    // BX.addCustomEvent('OnFavoriteAdded', BX.delegate(function($button) {}));
+    // BX.addCustomEvent('OnFavoriteDeleted', BX.delegate(function($button) {}));
 });

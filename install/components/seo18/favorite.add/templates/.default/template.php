@@ -14,6 +14,6 @@
 use Bitrix\Main\Localization\Loc;
 
 ?>
-<a class="btn btn-outline-primary"
+<a class="<?= $arParams['BUTTON_CLASS'] ?>"
    data-favorite="<?= $arParams['PRODUCT_ID'] ?>"
-   href="?action=add2Favorite&productId=<?= $arParams['PRODUCT_ID'] ?>"><?= Loc::getMessage('FAVORITE_ADD_BUTTON_LABEL') ?></a>
+   href="?action=add2Favorite&productId=<?= $arParams['PRODUCT_ID'] ?>"><?= $arParams['BUTTON_TEXT'] ?></a>
